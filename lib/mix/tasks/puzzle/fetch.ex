@@ -9,6 +9,14 @@ defmodule Mix.Tasks.Puzzle.Fetch do
   @aoc_url "https://adventofcode.com"
   @year "2024"
 
+  def setup_and_parse_args(args) do
+    Application.ensure_all_started([:httpoison, :dotenv])
+    {_opts, args, _} = OptionParser.parse(args, strict: [])
+    day = parse_day(List.first(args))
+    token = get_session_token()
+    {day, token}
+  end
+
   def get_puzzle_data(day, session_token) do
     make_request("#{@aoc_url}/#{@year}/day/#{day}", session_token)
   end

@@ -6,13 +6,9 @@ defmodule Mix.Tasks.Puzzle.Fetch.Text do
 
   @impl Mix.Task
   def run(args) do
-    Application.ensure_all_started([:httpoison, :dotenv])
+    {day, token} = BaseFetch.setup_and_parse_args(args)
 
-    {_opts, args, _} = OptionParser.parse(args, strict: [])
-    day = BaseFetch.parse_day(List.first(args))
-    token = BaseFetch.get_session_token()
-
-    case get_puzzle_data(day, token) do
+    case fetch_puzzle_text(day, token) do
       {:ok, body} ->
         IO.puts("Puzzle text for day #{day}:")
         IO.puts(body)
@@ -22,7 +18,7 @@ defmodule Mix.Tasks.Puzzle.Fetch.Text do
     end
   end
 
-  defp get_puzzle_data(day, session_token) do
+  defp fetch_puzzle_text(day, session_token) do
     BaseFetch.make_request("day/#{day}", session_token)
   end
 end

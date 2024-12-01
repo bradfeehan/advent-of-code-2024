@@ -6,13 +6,9 @@ defmodule Mix.Tasks.Puzzle.Fetch.Input do
 
   @impl Mix.Task
   def run(args) do
-    Application.ensure_all_started([:httpoison, :dotenv])
+    {day, token} = BaseFetch.setup_and_parse_args(args)
 
-    {_opts, args, _} = OptionParser.parse(args, strict: [])
-    day = BaseFetch.parse_day(List.first(args))
-    token = BaseFetch.get_session_token()
-
-    case get_puzzle_input(day, token) do
+    case fetch_puzzle_input(day, token) do
       {:ok, input} ->
         # Ensure the inputs directory exists
         File.mkdir_p!("puzzles/inputs")
@@ -27,7 +23,7 @@ defmodule Mix.Tasks.Puzzle.Fetch.Input do
     end
   end
 
-  defp get_puzzle_input(day, session_token) do
+  defp fetch_puzzle_input(day, session_token) do
     BaseFetch.make_request("day/#{day}/input", session_token)
   end
 end
