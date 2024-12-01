@@ -10,12 +10,7 @@ defmodule Mix.Tasks.Puzzle.Fetch.Input do
 
     case fetch_puzzle_input(day, token) do
       {:ok, input} ->
-        # Ensure the inputs directory exists
-        File.mkdir_p!("puzzles/inputs")
-
-        # Save to file
-        filename = "puzzles/inputs/day_#{String.pad_leading("#{day}", 2, "0")}.txt"
-        File.write!(filename, input)
+        filename = BaseFetch.write_file!(day, "input.txt", input)
         IO.puts("Puzzle input saved to #{filename}")
 
       {:error, reason} ->

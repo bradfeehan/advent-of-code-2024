@@ -10,8 +10,8 @@ defmodule Mix.Tasks.Puzzle.Fetch.Text do
 
     case fetch_puzzle_text(day, token) do
       {:ok, body} ->
-        IO.puts("Puzzle text for day #{day}:")
-        IO.puts(body)
+        filename = BaseFetch.write_file!(day, "README.md", body)
+        IO.puts("Puzzle text saved to #{filename}")
 
       {:error, reason} ->
         Mix.raise("Failed to fetch puzzle text: #{reason}")

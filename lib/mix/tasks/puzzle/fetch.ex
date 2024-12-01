@@ -54,6 +54,16 @@ defmodule Mix.Tasks.Puzzle.Fetch do
     end
   end
 
+  def ensure_puzzle_dir!(day) do
+    dir = get_puzzle_dir(day)
+    File.mkdir_p!(dir)
+    dir
+  end
+
+  def get_puzzle_dir(day) do
+    "puzzles/#{String.pad_leading("#{day}", 2, "0")}"
+  end
+
   def get_session_token do
     System.get_env("AOC_SESSION_TOKEN") ||
       raise "Please set the AOC_SESSION_TOKEN environment variable"
@@ -75,5 +85,12 @@ defmodule Mix.Tasks.Puzzle.Fetch do
       {day, ""} when day in 1..25 -> day
       _ -> raise "Day must be a number between 1 and 25"
     end
+  end
+
+  def write_file!(day, filename, contents) do
+    dir = ensure_puzzle_dir!(day)
+    path = Path.join(dir, filename)
+    File.write!(path, contents)
+    path
   end
 end

@@ -27,4 +27,7 @@ advent_of_code_2024-*.tar
 
 # Secrets
 /.env
-/puzzles/
+
+# Keep puzzle directories but ignore specific files
+puzzles/*/input.txt
+puzzles/*/README.md
