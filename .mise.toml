@@ -1,0 +1,6 @@
+[settings]
+experimental = true
+
+[tools]
+erlang = '27.1'
+elixir = '1.17'
