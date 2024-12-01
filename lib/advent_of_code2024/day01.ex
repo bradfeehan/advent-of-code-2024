@@ -5,6 +5,20 @@ defmodule AdventOfCode2024.Day01 do
 
   @doc """
   Solves part 1 of the day's challenge
+
+  ## Examples
+
+      iex> input = \"""
+      ...> 3   4
+      ...> 4   3
+      ...> 2   5
+      ...> 1   3
+      ...> 3   9
+      ...> 3   3
+      ...> \"""
+      iex> AdventOfCode2024.Day01.part1(input)
+      11
+
   """
   def part1(input) do
     {left_list, right_list} =
