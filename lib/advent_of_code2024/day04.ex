@@ -91,17 +91,24 @@ defmodule AdventOfCode2024.Day04 do
       count ->
         # Only proceed if this position is an 'A'
         if get_char(grid, i, j) == "A" do
-          # Only check one diagonal direction (down-right)
-          # This avoids double counting since each X-MAS pattern will be found twice otherwise
-          d1 = {1, 1}
-          d2 = {-1, 1}
+          # Check both diagonal pairs but only count each pattern once
+          # Allow MS or SM in either order on each diagonal
+          directions = [
+            # down-right and up-left pair
+            {{1, 1}, {-1, -1}},
+            # down-left and up-right pair
+            {{1, -1}, {-1, 1}}
+          ]
 
-          # Check if we can form an X-MAS pattern with these directions
-          if check_pattern_at_center(grid, i, j, d1, d2) do
-            count + 1
-          else
-            count
-          end
+          # Count how many direction pairs form either MAS or SAM patterns
+          matches =
+            Enum.count(directions, fn {d1, d2} ->
+              check_pattern_at_center(grid, i, j, d1, d2)
+            end)
+
+          # Each X-MAS pattern is counted twice (once in each diagonal pair)
+          # So we divide by 2 to get the actual count
+          count + div(matches, 2)
         else
           count
         end
@@ -119,19 +126,17 @@ defmodule AdventOfCode2024.Day04 do
          col + dc2 >= 0 and col + dc2 < cols and col - dc2 >= 0 and col - dc2 < cols do
       # Get the characters in both directions
       chars1 = [
-        get_char(grid, row - dr1, col - dc1),
-        get_char(grid, row + dr1, col + dc1)
+        get_char(grid, row + dr1, col + dc1),
+        get_char(grid, row - dr1, col - dc1)
       ]
 
       chars2 = [
-        get_char(grid, row - dr2, col - dc2),
-        get_char(grid, row + dr2, col + dc2)
+        get_char(grid, row + dr2, col + dc2),
+        get_char(grid, row - dr2, col - dc2)
       ]
 
-      # Check if we can form MAS patterns in either direction
-      # We only need to check one direction (M-S) since S-M is just M-S backwards
-      (chars1 == ["M", "S"] or chars1 == ["S", "M"]) and
-        (chars2 == ["M", "S"] or chars2 == ["S", "M"])
+      # Each diagonal must have exactly one M and one S in either order
+      Enum.sort(chars1) == ["M", "S"] and Enum.sort(chars2) == ["M", "S"]
     else
       false
     end
