@@ -31,35 +31,17 @@ defmodule AdventOfCode2024.Day04 do
   end
 
   defp parse_grid(input) do
-    grid =
-      input
-      |> String.trim()
-      |> String.split("\n")
-      |> Enum.map(&String.graphemes/1)
+    input
+    |> String.trim()
+    |> String.split("\n")
+    |> Enum.map(&String.graphemes/1)
+    |> Enum.with_index()
+    |> Enum.flat_map(fn {row, i} ->
+      row
       |> Enum.with_index()
-      |> Enum.flat_map(fn {row, i} ->
-        row
-        |> Enum.with_index()
-        |> Enum.map(fn {char, j} -> {{i, j}, char} end)
-      end)
-      |> Map.new()
-
-    # Debug log the grid with row/column indices
-    {rows, cols} = grid_dimensions(grid)
-    IO.puts("\nGrid contents (#{rows}x#{cols}):")
-
-    # Print column indices
-    IO.puts("   " <> Enum.map_join(0..(cols - 1), fn j -> "#{rem(j, 10)}" end))
-
-    # Print grid with row indices
-    for i <- 0..(rows - 1) do
-      row = for j <- 0..(cols - 1), do: Map.get(grid, {i, j}, ".")
-      IO.puts("#{String.pad_leading("#{i}", 2)} #{Enum.join(row)}")
-    end
-
-    IO.puts("")
-
-    grid
+      |> Enum.map(fn {char, j} -> {{i, j}, char} end)
+    end)
+    |> Map.new()
   end
 
   defp grid_dimensions(grid) do
@@ -88,48 +70,22 @@ defmodule AdventOfCode2024.Day04 do
     grid = parse_grid(input)
     {rows, cols} = grid_dimensions(grid)
 
-    # Find all 'A' positions that form an X-MAS pattern
     positions =
-      for i <- 0..(rows - 1),
-          j <- 0..(cols - 1),
+      for i <- 1..(rows - 2),
+          j <- 1..(cols - 2),
           Map.get(grid, {i, j}) == "A",
           has_x_pattern?(grid, {i, j}),
           into: MapSet.new(),
           do: {i, j}
 
-    IO.puts("\nFound X-MAS patterns at:")
-    Enum.each(positions, &IO.puts("  #{inspect(&1)}"))
-
     MapSet.size(positions)
   end
 
-  # Check if a position has an X-MAS pattern by looking at its diagonals
-  defp has_x_pattern?(grid, {row, col} = pos) do
-    # Check the four diagonal positions around the center
-    diagonals = [
-      # up-left
-      {row - 1, col - 1},
-      # up-right
-      {row - 1, col + 1},
-      # down-left
-      {row + 1, col - 1},
-      # down-right
-      {row + 1, col + 1}
-    ]
-
-    # Get the characters at these positions
-    chars = Enum.map(diagonals, &Map.get(grid, &1))
-    IO.puts("\nChecking position #{inspect(pos)}:")
-    IO.puts("  Diagonal chars: #{inspect(chars)}")
-
-    # Count M's and S's
-    m_count = Enum.count(chars, &(&1 == "M"))
-    s_count = Enum.count(chars, &(&1 == "S"))
-
-    # We need exactly two M's and two S's
-    result = m_count == 2 and s_count == 2
-    IO.puts("  M count: #{m_count}, S count: #{s_count}")
-    IO.puts("  Valid X-MAS pattern? #{result}")
-    result
+  defp has_x_pattern?(grid, {row, col}) do
+    diagonal1 = [Map.get(grid, {row - 1, col - 1}), Map.get(grid, {row + 1, col + 1})]
+    diagonal2 = [Map.get(grid, {row - 1, col + 1}), Map.get(grid, {row + 1, col - 1})]
+    valid_diagonal?(diagonal1) and valid_diagonal?(diagonal2)
   end
+
+  defp valid_diagonal?([a, b]), do: [a, b] in [["M", "S"], ["S", "M"]]
 end
