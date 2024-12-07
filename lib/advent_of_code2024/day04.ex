@@ -68,7 +68,76 @@ defmodule AdventOfCode2024.Day04 do
     end
   end
 
-  def part2(_input) do
-    :not_implemented
+  @doc """
+  Count the number of X-MAS patterns in the grid.
+  An X-MAS is formed by two MAS sequences in an X shape.
+  Each MAS can be forwards or backwards.
+  """
+  def part2(input) do
+    grid =
+      input
+      |> String.trim()
+      |> String.split("\n")
+      |> Enum.map(&String.graphemes/1)
+
+    rows = length(grid)
+    cols = length(Enum.at(grid, 0))
+
+    # For each position that could be the center of an X
+    # We need to check positions that could be the center of a 3x3 pattern
+    for i <- 1..(rows - 2),
+        j <- 1..(cols - 2),
+        reduce: 0 do
+      count ->
+        # Only proceed if this position is an 'A'
+        if get_char(grid, i, j) == "A" do
+          # Only check one diagonal direction (down-right)
+          # This avoids double counting since each X-MAS pattern will be found twice otherwise
+          d1 = {1, 1}
+          d2 = {-1, 1}
+
+          # Check if we can form an X-MAS pattern with these directions
+          if check_pattern_at_center(grid, i, j, d1, d2) do
+            count + 1
+          else
+            count
+          end
+        else
+          count
+        end
+    end
+  end
+
+  defp check_pattern_at_center(grid, row, col, {dr1, dc1}, {dr2, dc2}) do
+    rows = length(grid)
+    cols = length(Enum.at(grid, 0))
+
+    # Check if we can fit the patterns in both directions from the center A
+    if row + dr1 >= 0 and row + dr1 < rows and row - dr1 >= 0 and row - dr1 < rows and
+         col + dc1 >= 0 and col + dc1 < cols and col - dc1 >= 0 and col - dc1 < cols and
+         row + dr2 >= 0 and row + dr2 < rows and row - dr2 >= 0 and row - dr2 < rows and
+         col + dc2 >= 0 and col + dc2 < cols and col - dc2 >= 0 and col - dc2 < cols do
+      # Get the characters in both directions
+      chars1 = [
+        get_char(grid, row - dr1, col - dc1),
+        get_char(grid, row + dr1, col + dc1)
+      ]
+
+      chars2 = [
+        get_char(grid, row - dr2, col - dc2),
+        get_char(grid, row + dr2, col + dc2)
+      ]
+
+      # Check if we can form MAS patterns in either direction
+      # We only need to check one direction (M-S) since S-M is just M-S backwards
+      (chars1 == ["M", "S"] or chars1 == ["S", "M"]) and
+        (chars2 == ["M", "S"] or chars2 == ["S", "M"])
+    else
+      false
+    end
+  end
+
+  defp get_char(grid, row, col) do
+    grid |> Enum.at(row) |> Enum.at(col)
   end
 end

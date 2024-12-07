@@ -18,4 +18,8 @@ defmodule AdventOfCode2024.Day04Test do
   test "part1 with sample input" do
     assert Day04.part1(@sample_input) == 18
   end
+
+  test "part2 with sample input" do
+    assert Day04.part2(@sample_input) == 9
+  end
 end
