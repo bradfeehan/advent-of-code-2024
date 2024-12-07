@@ -30,7 +30,12 @@ defmodule AdventOfCode2024.MixProject do
 
   defp aliases do
     [
-      "puzzle.fetch": ["puzzle.fetch.text", "puzzle.fetch.input"]
+      "puzzle.fetch": &fetch_puzzle/1
     ]
+  end
+
+  defp fetch_puzzle(args) do
+    Mix.Task.run("puzzle.fetch.text", args)
+    Mix.Task.run("puzzle.fetch.input", args)
   end
 end
