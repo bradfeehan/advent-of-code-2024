@@ -1,0 +1,77 @@
+Introduction
+============
+
+I'm doing Advent of Code 2024!
+
+* Advent of Code is a yearly advent calendar of small programming puzzles.
+* Each day of December, a puzzle is unlocked. Each puzzle consists of two parts.
+* After solving part 1, a part 2 unlocks, as well as the next day's puzzle.
+
+
+Puzzle Format
+-------------
+
+* Each user has unique "input", usually multi-line text.
+* The "answer" for each part of the puzzle is usually a single number,
+  calculated from the input.
+
+This Project
+------------
+
+* We're using Elixir to parse the input and provide an answer to each puzzle.
+* I'm new to the language and ecosystem, and want to use idiomatic Elixir.
+* This includes pipelines, pattern-matching, or even macros.
+
+### Structure
+* There is some scaffolding available, including:
+  * mix task `puzzle.fetch.text DAY`: fetch the puzzle text (full HTML page)
+    for a particular day to `puzzles/DAY/index.html`
+  * mix task `puzzle.fetch.input`: fetch user input to `puzzles/DAY/input.txt`
+  * mix task `puzzle.fetch DAY`: fetch both for a given day
+* Each day's puzzle solution is in `lib/advent_of_code2024/dayNN.ex`.
+* A module named `AdventOfCode2024.DayNN`, with functions `partN(input)`.
+* Functions take a multi-line string and returns an answer
+
+
+Guidelines
+----------
+
+### Development Process
+
+For each part of each day's puzzle:
+
+1. Create a doctest, based on the example data and corresponding answer from
+   the problem description.
+2. Briefly reflect on the problem and any initial ideas for approaches.
+3. Add additional tests to cover edge cases, with some simplified test cases,
+   as well as a more complex test case with longer input.
+4. Begin the implementation, aiming for a working solution over perfect,
+   production-ready code.
+5. Once tests pass, run the implementation against the user input, and
+   provide the answer for the user to submit.
+6. Reflect on the implementation, and refactor with Elixir idioms in mind.
+
+After solving part 1, re-run `mix puzzle.fetch.text` and repeat for part 2.
+
+
+### Troubleshooting
+
+#### Errors
+
+* Review the error message carefully, restating key elements of the message.
+* Consider improving the error message if it's from within our own code.
+  Include any relevant state and diagnostic information that might help.
+* If the error comes from Elixir core, consider reviewing the code where it's
+  generated to understand that layer below.
+
+#### Failing tests
+
+* Consider if the error message could be improved, and re-run the test.
+* Add more granular debug logging, assertions, simpler test cases, or
+  even visualisations of the state at each iteration of an algorithm.
+
+#### Wrong answers
+
+* If tests pass but the answer is wrong, add additional test cases to explore
+  the understanding is correct. Consider potential misunderstandings of the
+  problem description to craft a relevant test case.
